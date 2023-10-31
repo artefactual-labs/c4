@@ -61,10 +61,5 @@ html_static_path = ['_static']
 
 # -- Options for PlantUML for Sphinx ----------------------------------------
 
-is_rtd = os.getenv("READTHEDOCS") == "True"
-if is_rtd:
-  plantuml = f"java -jar {conf_dir}/vendor/plantuml-gplv2-1.2023.12.jar"
-else:
-  plantuml_jar = os.getenv("PLANTUML_JAR")
-  if plantuml_jar:
-    plantuml = f"java -jar {plantuml_jar}"
+default_jar_path = f"{conf_dir}/vendor/plantuml-gplv2-1.2023.12.jar"
+plantuml = f"java -jar {os.getenv('PLANTUML_JAR', default_jar_path)}"
