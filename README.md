@@ -13,6 +13,13 @@ Visit the site: https://c4test.rtfd.io/.
 - PlantUML for Sphinx: integration with PlantUML.
 - ReadTheDocs: hosting and real-time building of our documentation.
 
+## License
+
+This repository and its contents are licensed under the Apache License, Version
+2.0. It contains a version of PlantUML, which is licensed under the GNU General
+Public License version 2 (GPLv2). The PlantUML JAr is located under the
+`vendor` directory of this repository.
+
 ## TODO
 
 - Try https://github.com/sphinx-contrib/kroki.
