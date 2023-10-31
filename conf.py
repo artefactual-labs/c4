@@ -4,8 +4,6 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-import os
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -15,6 +13,10 @@ import os
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+
+import os
+
+conf_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 # -- Project information -----------------------------------------------------
@@ -59,6 +61,10 @@ html_static_path = ['_static']
 
 # -- Options for PlantUML for Sphinx ----------------------------------------
 
-plantuml_jar = os.getenv("PLANTUML_JAR")
-if plantuml_jar:
-  plantuml = f"java -jar {plantuml_jar}"
+is_rtd = os.getenv("READTHEDOCS") == "True"
+if is_rtd:
+  plantuml = f"java -jar {conf_dir}/vendor/plantuml-gplv2-1.2023.12.jar"
+else:
+  plantuml_jar = os.getenv("PLANTUML_JAR")
+  if plantuml_jar:
+    plantuml = f"java -jar {plantuml_jar}"
