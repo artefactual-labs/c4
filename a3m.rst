@@ -32,3 +32,18 @@ Web application:
    Rel(spaAdmin, api, "Uses", "https")
    Rel_L(api, archive, "Writes", "messages", $tags="backup")
    SHOW_LEGEND()
+
+a3m:
+
+.. uml::
+
+   !include <C4/C4_Container>
+
+   Person(archivist1, "Digital Archivist 1")
+   Person(archivist2, "Digital Archivist 2")
+   System(a3m, "a3m", $type="a3m client")
+   System(a3md, "a3md", $type="a3m server")
+   Rel(archivist1, a3m, "Uses", "CLI")
+   Rel(archivist2, a3md, "Uses", "HTTPS")
+   Rel(a3m, a3md, "Uses", "HTTPS")
+   SHOW_LEGEND()
