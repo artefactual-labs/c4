@@ -2,48 +2,30 @@
 a3m
 ===
 
-The simplest diagram:
-
 .. uml::
 
-    !include <C4/C4_Context>
-    Person(user, "C4 fans", "Hello to Sphinx!")
-
-Web application:
-
-.. uml::
-
-   !include <C4/C4_Container>
-   AddElementTag("v1.0", $borderColor="#d73027")
-   AddElementTag("v1.1", $fontColor="#d73027")
-   AddElementTag("backup", $fontColor="orange")
-   AddRelTag("backup", $textColor="orange", $lineColor="orange", $lineStyle = DashedLine())
-   Person(user, "Customer", "People that need products")
-   Person(admin, "Administrator", "People that administrates the products via the new v1.1 components", $tags="v1.1")
-   Container(spa, "SPA", "angular", "The main interface that the customer interacts with via v1.0", $tags="v1.0")
-   Container(spaAdmin, "Admin SPA", "angular", "The administrator interface that the customer interacts with via new v1.1", $tags="v1.1")
-   Container(api, "API", "java", "Handles all business logic (incl. new v1.1 extensions)", $tags="v1.0+v1.1")
-   ContainerDb(db, "Database", "Microsoft SQL", "Holds product, order and invoice information")
-   Container(archive, "Archive", "Audit logging", "Stores 5 years", $tags="backup")
-   Rel(user, spa, "Uses", "https")
-   Rel(spa, api, "Uses", "https")
-   Rel_R(api, db, "Reads/Writes")
-   Rel(admin, spaAdmin, "Uses", "https")
-   Rel(spaAdmin, api, "Uses", "https")
-   Rel_L(api, archive, "Writes", "messages", $tags="backup")
-   SHOW_LEGEND()
-
-a3m:
-
-.. uml::
-
-   !include <C4/C4_Container>
-
-   Person(archivist1, "Digital Archivist 1")
-   Person(archivist2, "Digital Archivist 2")
-   System(a3m, "a3m", $type="a3m client")
-   System(a3md, "a3md", $type="a3m server")
-   Rel(archivist1, a3m, "Uses", "CLI")
-   Rel(archivist2, a3md, "Uses", "HTTPS")
-   Rel(a3m, a3md, "Uses", "HTTPS")
-   SHOW_LEGEND()
+    @startuml
+    !theme spacelab
+    !include <C4/C4_Container>
+    Person(archivist, "Digital Archivist", "A digital archivist utilizing a3m manages, preserves, and curates digital collections, ensuring their long-term accessibility and integrity through systematic archival processes and state-of-the-art digital preservation techniques.")
+    System_Boundary(a3m, "a3m") {
+        Container(a3m_client, "Client", "Python", "The client can operate as a command-line interface or a gRPC client over the wire.")
+        Container(a3m_api, "gRPC API", "Python", "The gRPC server is a core component of the a3m server, providing processing status details and basic actions such as transfer submission.")
+        Container(a3m_engine, "Workflow engine", "Python", "The workflow engine is a core component that orchestrates the tasks needed during processing by looking up the workflow document.")
+        Container(a3m_workflow, "Workflow document", "JSON-encoded DSL", "It describes the processing steps.")
+        Container(a3m_pool, "Thread pool", "Python", "It maintains a pool of system threads used to execute the tasks defined in the workflow document.")
+        Container(a3m_client_modules, "Client modules", "Python", "Executable modules, e.g. file format identification, normalization, storage, etc...")
+        ContainerDb(a3m_db, "Database", "SQLite", "The database is used to store processing state and information about the packages.")
+    }
+    System_Ext(blobstore, "S3", "The blobstore used to store AIPs. It can be configured to notify other systems for further work, e.g. reporting.")
+    Rel(archivist, a3m_client, "Uses")
+    Rel(a3m_client, a3m_api, "Uses", "gRPC")
+    Rel(a3m_api, a3m_engine, "Uses", "Internal")
+    Rel_Left(a3m_engine, a3m_workflow, "Reads workflow from")
+    Rel_Neighbor(a3m_engine, a3m_pool, "Runs tasks with")
+    Rel_Neighbor(a3m_engine, a3m_db, "Reads and writes to")
+    Rel(a3m_client_modules, a3m_db, "Reads and writes to")
+    Rel(a3m_pool, a3m_client_modules, "Executes")
+    Rel(a3m_client_modules, blobstore, "Sends AIPs")
+    SHOW_LEGEND()
+    @enduml
