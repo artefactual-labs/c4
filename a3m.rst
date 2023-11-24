@@ -2,6 +2,10 @@
 a3m
 ===
 
+This is a system context diagram showing how a3m, the software system, fits into
+the world around it. It is also a container diagram showing the high-level
+technical building blocks.
+
 .. uml::
 
     @startuml
